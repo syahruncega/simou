@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:simou/consts/colors.dart';
-import 'package:simou/pages/Login/widgets/text_field_container.dart';
+import 'package:simou/pages/Login/components/text_field_container.dart';
 
 class RoundedPasswordField extends StatelessWidget {
-  final ValueChanged<String> onChanged;
-  final String? Function(String?)? validator;
   const RoundedPasswordField({
     Key? key,
     this.validator,
-    required this.onChanged,
+    this.onChanged,
+    this.inputFormatters,
+    this.errorText,
+    required this.controller,
   }) : super(key: key);
+
+  final String? errorText;
+  final ValueChanged<String>? onChanged;
+  final String? Function(String?)? validator;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +27,19 @@ class RoundedPasswordField extends StatelessWidget {
         onChanged: onChanged,
         cursorColor: kPrimaryColor,
         validator: validator,
-        decoration: const InputDecoration(
+        controller: controller,
+        decoration: InputDecoration(
           hintText: "Password",
-          icon: Icon(
+          icon: const Icon(
             Icons.lock,
             color: kPrimaryColor,
           ),
-          suffixIcon: Icon(
+          suffixIcon: const Icon(
             Icons.visibility,
             color: kPrimaryColor,
           ),
           border: InputBorder.none,
+          errorText: errorText,
         ),
       ),
     );

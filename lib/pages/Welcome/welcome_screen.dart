@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simou/pages/Welcome/widgets/welcome_body.dart';
+import 'package:simou/pages/Welcome/components/welcome_body.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);

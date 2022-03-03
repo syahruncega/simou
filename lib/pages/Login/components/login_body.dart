@@ -7,9 +7,10 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simou/components/rounded_button.dart';
 import 'package:simou/controllers/login_controller.dart';
-import 'package:simou/pages/Login/widgets/background.dart';
-import 'package:simou/pages/Login/widgets/rounded_input_field.dart';
-import 'package:simou/pages/Login/widgets/rounded_password_field.dart';
+import 'package:simou/pages/Login/components/background.dart';
+import 'package:simou/pages/Login/components/rounded_input_field.dart';
+import 'package:simou/pages/Login/components/rounded_password_field.dart';
+import 'package:simou/routes/route_name.dart';
 import 'package:simou/services/api.dart';
 import 'package:simou/services/api_exceptions.dart';
 
@@ -27,7 +28,7 @@ class LoginBody extends StatelessWidget {
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: [
               const Text(
                 "LOGIN",
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -39,13 +40,18 @@ class LoginBody extends StatelessWidget {
               ),
               SizedBox(height: size.height * 0.03),
               RoundedInputField(
-                hintText: "Your Email",
-                errorText: loginController.username.error,
-                onChanged: loginController.validateUsername,
+                hintText: "Username",
+                controller: loginController.username,
               ),
+              Obx(() => loginController.usernameError.value == ""
+                  ? const SizedBox()
+                  : Text(loginController.usernameError.value)),
               RoundedPasswordField(
-                onChanged: loginController.validatePassword,
+                controller: loginController.password,
               ),
+              Obx(() => loginController.passwordError.value == ""
+                  ? const SizedBox()
+                  : Text(loginController.passwordError.value)),
               RoundedButton(
                 text: "LOGIN",
                 press: () async {
@@ -53,8 +59,8 @@ class LoginBody extends StatelessWidget {
                       await SharedPreferences.getInstance();
                   var response = await API
                       .login(
-                          username: loginController.username.value!,
-                          password: loginController.password.value!)
+                          username: loginController.username.text,
+                          password: loginController.password.text)
                       .catchError((error) {
                     if (error is BadRequestException) {
                       var apiError = json.decode(error.message!);
@@ -68,8 +74,9 @@ class LoginBody extends StatelessWidget {
                   });
                   log(response.data.accessToken);
                   prefs.setString("accessToken", response.data.accessToken);
+                  Get.toNamed(RouteName.dashboard);
 
-                  // if (loginController.validate) {
+                  // if (loginController.validate()) {
                   //   ScaffoldMessenger.of(context).showSnackBar(
                   //     const SnackBar(
                   //       content: Text("Processing Data"),

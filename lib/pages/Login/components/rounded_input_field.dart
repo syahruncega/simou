@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:simou/consts/colors.dart';
-import 'package:simou/pages/Login/widgets/text_field_container.dart';
+import 'package:simou/pages/Login/components/text_field_container.dart';
 
 class RoundedInputField extends StatelessWidget {
   const RoundedInputField({
@@ -10,16 +10,18 @@ class RoundedInputField extends StatelessWidget {
     this.icon = Icons.person,
     this.validator,
     this.inputFormatters,
-    required this.onChanged,
-    required this.errorText,
+    this.onChanged,
+    this.errorText,
+    required this.controller,
   }) : super(key: key);
 
   final String? hintText;
+  final String? errorText;
   final IconData icon;
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onChanged;
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
-  final String? errorText;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class RoundedInputField extends StatelessWidget {
         onChanged: onChanged,
         cursorColor: kPrimaryColor,
         validator: validator,
+        controller: controller,
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
           icon: Icon(
@@ -36,6 +39,7 @@ class RoundedInputField extends StatelessWidget {
           ),
           hintText: hintText,
           border: InputBorder.none,
+          errorText: errorText,
         ),
       ),
     );

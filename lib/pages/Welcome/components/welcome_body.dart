@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simou/components/rounded_button.dart';
-import 'package:simou/pages/Login/login_screen.dart';
-import 'package:simou/pages/Welcome/widgets/welcome_background.dart';
+import 'package:simou/pages/Welcome/components/welcome_background.dart';
 import 'package:simou/routes/route_name.dart';
 
 class WelcomeBody extends StatelessWidget {
@@ -33,11 +30,10 @@ class WelcomeBody extends StatelessWidget {
             RoundedButton(
               text: "LOGIN",
               press: () async {
-                // Get.toNamed(RouteName.login);
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 var accessToken = prefs.getString('accessToken');
                 if (accessToken != null) {
-                  log(accessToken);
+                  Get.toNamed(RouteName.dashboard);
                 } else {
                   Get.toNamed(RouteName.login);
                 }

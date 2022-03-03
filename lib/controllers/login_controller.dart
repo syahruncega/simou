@@ -1,35 +1,27 @@
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-import 'package:simou/utils/validation_modal.dart';
+import 'package:get/state_manager.dart';
 
 class LoginController extends GetxController {
-  // final storeName = 'Thick Shake'.obs;
-  final usernameFieldController = TextEditingController();
-  final emailFieldController = TextEditingController();
-  ValidationModel username = ValidationModel(null, null);
-  ValidationModel password = ValidationModel(null, null);
+  final username = TextEditingController();
+  final password = TextEditingController();
+  final usernameError = "".obs;
+  final passwordError = "".obs;
 
-  void validateUsername(String? val) {
-    if (val == null || val.isEmpty) {
-      username = ValidationModel(null, 'Please enter username');
-    } else {
-      username = ValidationModel(val, null);
+  bool validate() {
+    usernameError.value = "";
+    passwordError.value = "";
+
+    if (username.text.trim().isEmpty) {
+      usernameError.value = 'Username harus diiisi';
     }
-  }
-
-  void validatePassword(String? val) {
-    if (val == null || val.isEmpty) {
-      password = ValidationModel(
-        null,
-        'Please enter password',
-      );
-    } else {
-      password = ValidationModel(val, null);
+    if (password.text.trim().isEmpty) {
+      passwordError.value = "Password harus diisi";
     }
-  }
 
-  bool get validate {
-    return username.value != null && password.value != null;
+    if (usernameError.value.isNotEmpty || passwordError.value.isNotEmpty) {
+      return false;
+    }
+    return true;
   }
 
   // @override
