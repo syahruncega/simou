@@ -1,23 +1,23 @@
-import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simou/components/rounded_button.dart';
 import 'package:simou/controllers/login_controller.dart';
+import 'package:simou/models/auth.dart';
+import 'package:simou/models/session.dart';
 import 'package:simou/pages/Login/components/background.dart';
 import 'package:simou/pages/Login/components/rounded_input_field.dart';
 import 'package:simou/pages/Login/components/rounded_password_field.dart';
 import 'package:simou/routes/route_name.dart';
-import 'package:simou/services/api.dart';
-import 'package:simou/services/api_exceptions.dart';
+import 'package:simou/services/dio_client.dart';
 
 class LoginBody extends StatelessWidget {
   LoginBody({Key? key}) : super(key: key);
   final loginController = Get.find<LoginController>();
   final _formKey = GlobalKey<FormState>();
+  final DioClient _dioClient = DioClient();
 
   @override
   Widget build(BuildContext context) {
@@ -55,34 +55,15 @@ class LoginBody extends StatelessWidget {
               RoundedButton(
                 text: "LOGIN",
                 press: () async {
+                  Auth auth = Auth(
+                      username: loginController.username.text,
+                      password: loginController.password.text);
+                  Session? session = await _dioClient.login(loginInfo: auth);
+                  log(session!.data.accessToken);
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
-                  var response = await API
-                      .login(
-                          username: loginController.username.text,
-                          password: loginController.password.text)
-                      .catchError((error) {
-                    if (error is BadRequestException) {
-                      var apiError = json.decode(error.message!);
-                      log(apiError);
-                    } else if (error is FetchDataException) {
-                      log("FetchDataException");
-                    } else {
-                      var apiError = json.decode(error.message!);
-                      log(apiError);
-                    }
-                  });
-                  log(response.data.accessToken);
-                  prefs.setString("accessToken", response.data.accessToken);
+                  prefs.setString("accessToken", session.data.accessToken);
                   Get.toNamed(RouteName.dashboard);
-
-                  // if (loginController.validate()) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //       content: Text("Processing Data"),
-                  //     ),
-                  //   );
-                  // }
                 },
               ),
               SizedBox(height: size.height * 0.03),

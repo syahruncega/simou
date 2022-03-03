@@ -1,4 +1,4 @@
-// To parse required this JSON data, do
+// To parse this JSON data, do
 //
 //     final session = sessionFromJson(jsonString);
 
@@ -74,7 +74,7 @@ class User {
   String role;
   String status;
   dynamic deletedAt;
-  DateTime createdAt;
+  dynamic createdAt;
   DateTime updatedAt;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -86,7 +86,7 @@ class User {
         role: json["role"],
         status: json["status"],
         deletedAt: json["deleted_at"],
-        createdAt: DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"],
         updatedAt: DateTime.parse(json["updated_at"]),
       );
 
@@ -99,7 +99,7 @@ class User {
         "role": role,
         "status": status,
         "deleted_at": deletedAt,
-        "created_at": createdAt.toIso8601String(),
+        "created_at": createdAt,
         "updated_at": updatedAt.toIso8601String(),
       };
 }
